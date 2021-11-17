@@ -28,4 +28,4 @@ VALUES
 ("Sara", "Fall", 6, 7),
 ("Mike", "Smith", 7, null),
 ("Lucy", "Spring", 8, 9),
-("Anrew", "Lee", 9, null);
+("Andrew", "Lee", 9, null);
