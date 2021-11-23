@@ -7,11 +7,12 @@ const db = require('./db/index');
 const figlet = require("figlet");
 const chalk = require("chalk");
 
+
 connection.connect((error) => {
     if (error) throw error;
     console.log(chalk.greenBright.bold(`============================================================`));
     console.log(``);
-    console.log(chalk.blueBright.bold(figlet.textSync(`        ` + "Employee\nManager")));
+    console.log(chalk.blueBright.bold(figlet.textSync(`        ` + "Employee \n Manager")));
     console.log(``);
     console.log(chalk.greenBright.bold(`============================================================`));
     userInput();
@@ -95,76 +96,62 @@ viewAllDepartments = () => {
         .then(() => userInput())
 };
 
-// function to add an employee
-addEmployee = () => {
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                name: 'fistName',
-                message: "What is the employee's first name?",
-                validate: inputName => {
-                    if (inputName) {
-                        return true;
-                    } else {
-                        connectionsole.log('Please enter a first name');
-                        return false;
-                    }
-                }
-            },
-            {
-                type: 'input',
-                name: 'lastName',
-                message: "What is the employee's last name?",
-                validate: inputLastName => {
-                    if (inputLastName) {
-                        return true;
-                    } else {
-                        console.log('Please enter a last name');
-                        return false;
-                    }
-                }
-            },
-            {
-                type: 'list',
-                name: 'role',
-                message: "What is the employee's role?",
-                choices: [
-                    "Software Engineer",
-                    "Lead Engineer",
-                    "Salesperson",
-                    "Sales Lead",
-                    "Accountant",
-                    "Lawyer",
-                    "Leagal Team Lead",
-                    "Marketing Analyst",
-                    "Marketing Lead"
-                ],
-            },
-            {
-                type: 'list',
-                name: 'department',
-                message: "What is the employee's department?",
-                choices: [
-                    ("Engineering"),
-                    ("Sales"),
-                    ("Finance"), 
-                    ("Legal"),
-                    ("Marketing")
-                ],
-            },
-            {
-                type: 'list',
-                name: 'manager',
-                message: "Who is the employee's manager?",
-                choices: [
-                    "John Snow",
-                    "Lisa Flower",
-                    "Dan Cold",
-                    "Mike Smith",
-                    "Andrew Lee"
-                ],
-              }
-        ])
-        
+//function to add department
+addDepartment = () => {
+    inquirer.prompt([
+        {
+            name: 'newDepartment',
+            type: 'input',
+            message: "What's the name of new Department?"
+        }
+    ])
+    .then ((answer) => {
+        const sql = `INSERT INTO departments (name) VALUES (?)`;
+        const params = answer.newDepartment;
+        connection.query(sql, params, (error, response) => {
+            if (error) throw error;
+            console.log(chalk.greenBright.bold(`========================================================================================`));
+            console.log(chalk.blueBright(params + `Department created!`));
+            console.log(chalk.greenBright.bold(`========================================================================================`));
+            viewAllDepartments();
+        })
+    })
 };
+
+// function to add a role
+const addRole = () => {
+    //find department
+    db.findAllDepartments().then(([departments]) => {
+        const deptChoices = departments.map(({id, name}) =>
+         ({ value:id, name: name}))
+
+    inquirer.prompt ([
+        {
+            name: "title",
+            type: "input",
+            message: " What's the title of your role?"
+        },
+        {
+            name: "salary",
+            type: "input",
+            message: " What salary for new role?"
+        },
+        {
+            name: "department_id",
+            type: "list",
+            message: " What department your new role in?",
+            choices: deptChoices
+        }
+    ]).then(role => {
+        db.newRole(role)
+        .then(() => console.log("role added"))
+        .then(() => userInput())
+    })
+})
+   
+};
+addEmployee = () => {
+    
+}
+
+
