@@ -12,7 +12,7 @@ connection.connect((error) => {
     if (error) throw error;
     console.log(chalk.greenBright.bold(`============================================================`));
     console.log(``);
-    console.log(chalk.blueBright.bold(figlet.textSync(`        ` + "Employee\n"  `   ` + "Manager")));
+    console.log(chalk.blueBright.bold(figlet.textSync(`        ` + "Employee \n Manager")));
     console.log(``);
     console.log(chalk.greenBright.bold(`============================================================`));
     userInput();
@@ -152,36 +152,34 @@ addEmployee = () => {
     db.findAllRoles().then(([roles]) => {
         const roleChoices = roles.map(({ id, title }) =>
             ({ value: id, name: title }))
-        // find managers( having problems with placing right variables for ? )
-        db.findAllManagers().then(([manager]) => {
-            const managerChoices = manager.map(({ id, first_name, last_name }) => ({ value: id, name: first_name + " " + last_name }))
+        // find  employees
+       db.findAllEmployees().then(([employees]) => {
+            const managerChoices = employees.map(({ id, first_name, last_name }) => ({ value: id, name: first_name + " " + last_name }))
             inquirer.prompt([
                 {
                     type: 'input',
-                    name: 'firstName',
+                    name: 'first_name',
                     message: "What is the employee's first name?"
                 },
                 {
                     type: 'input',
-                    name: 'lastName',
+                    name: 'last_name',
                     message: "What is the employee's last name?"
                 },
                 {
-                    name: 'roleId',
+                    name: 'role_id',
                     type: 'list',
                     message: "What is the employee's role?",
                     choices: roleChoices
                 },
                 {
                     type: 'list',
-                    name: 'managerId',
+                    name: 'manager_id',
                     message: "Who is the employee's manager?",
                     choices: managerChoices
                 }
-            ])
-                .then(answer => {
-                    const params = (answer.firstName, answer.lastName, answer.roleId, answer.managerId)
-                    db.newEmployee(params)
+            ]).then(employee => {
+                    db.newEmployee(employee)
                         .then(() => console.log(chalk.greenBright.bold(`===============` + "New Employee has been added!" + `===============`)))
                         .then(() => userInput())
                 })
@@ -213,7 +211,7 @@ updateEmployeeRole = () => {
                     },
                 ]).then(answer => {
                     const params = (answer.roleId, answer.employeeId)
-                    db.setRole(params)
+                    db.setRole(answer.roleId, answer.employeeId)
                      .then(() => 
                      console.log(chalk.greenBright.bold(`=============` + "Employee's Role has been updated!" + `==============`)))
                         .then(() => userInput())

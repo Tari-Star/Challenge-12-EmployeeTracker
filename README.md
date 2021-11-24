@@ -18,11 +18,25 @@
 
 ## Demo:
 
-* [View walkthrough video on Screencastify]()<br>
+* [View walkthrough video on Screencastify](https://watch.screencastify.com/v/UzA95dfsULE7UqjDaIAs)<br>
 
 * Repository link: [https://github.com/Tari-Star/Challenge-12-EmployeeTracker.git](https://github.com/Tari-Star/Challenge-12-EmployeeTracker.git)
 
-![demo](./images/)
+***Restart MySQL Database, source schema and seeds:***
+
+![demo](./images/part1.gif)
+
+***View All Employees,All Roles, and All Departments:***
+
+![demo](./images/part2.gif)
+
+***Add New Role and New Department:***
+
+![demo](./images/part3.gif)
+
+***Add New Employee and Update Employee's Role:***
+
+![demo](./images/part4.gif)
 
 
 ## Technology ( Links ):

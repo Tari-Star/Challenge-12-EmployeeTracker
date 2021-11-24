@@ -35,14 +35,14 @@ class DB {
   }
  
   newEmployee(params) {
-      return this.connection.promise().query(`INSERT INTO employees SET ?`, params);
+  return this.connection.promise().query(`INSERT INTO employees SET ?`, params);
  
 }
  findAllManagers() {
   return this.connection.promise().query(`SELECT CONCAT(employees.id, employees.first_name, ' ' , employees.last_name) AS 'manager' FROM employees WHERE manager_id IS NULL`)
  }
- setRole(params){
-  return this.connection.promise().query(`UPDATE employees SET role_id = ? WHERE id = ?`, params)
+ setRole(roleId, employeeId){
+  return this.connection.promise().query(`UPDATE employees SET role_id = ? WHERE id = ?`, [roleId, employeeId])
  }
 }
 module.exports = new DB(connection);
