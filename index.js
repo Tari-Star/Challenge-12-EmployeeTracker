@@ -12,7 +12,7 @@ connection.connect((error) => {
     if (error) throw error;
     console.log(chalk.greenBright.bold(`============================================================`));
     console.log(``);
-    console.log(chalk.blueBright.bold(figlet.textSync(`        ` + "Employee \n Manager")));
+    console.log(chalk.blueBright.bold(figlet.textSync(`        ` + "Employee\n"  `   ` + "Manager")));
     console.log(``);
     console.log(chalk.greenBright.bold(`============================================================`));
     userInput();
@@ -153,40 +153,35 @@ addEmployee = () => {
         const roleChoices = roles.map(({ id, title }) =>
             ({ value: id, name: title }))
         // find managers( having problems with placing right variables for ? )
-        // db.findAllManagers().then(([ ? ]))
-        // const managerChoices = ?.map(({ id, first_name, last_name }) => ({ value: id, name: first_name + " " + last_name }))
-
-        // find employees (lists all employees, but doesn't add manager to new employee, shows null)
-        db.findAllEmployees().then(([employees]) => {
-            const managerChoices = employees.map(({ id, first_name, last_name }) => ({ value: id, name: first_name + " " + last_name }))
-
+        db.findAllManagers().then(([manager]) => {
+            const managerChoices = manager.map(({ id, first_name, last_name }) => ({ value: id, name: first_name + " " + last_name }))
             inquirer.prompt([
                 {
                     type: 'input',
-                    name: 'first_name',
+                    name: 'firstName',
                     message: "What is the employee's first name?"
                 },
                 {
                     type: 'input',
-                    name: 'last_name',
+                    name: 'lastName',
                     message: "What is the employee's last name?"
                 },
                 {
-                    name: 'role_id',
+                    name: 'roleId',
                     type: 'list',
                     message: "What is the employee's role?",
                     choices: roleChoices
                 },
                 {
                     type: 'list',
-                    name: 'manager_id',
+                    name: 'managerId',
                     message: "Who is the employee's manager?",
                     choices: managerChoices
                 }
             ])
-                .then(employee => {
-
-                    db.newEmployee(employee)
+                .then(answer => {
+                    const params = (answer.firstName, answer.lastName, answer.roleId, answer.managerId)
+                    db.newEmployee(params)
                         .then(() => console.log(chalk.greenBright.bold(`===============` + "New Employee has been added!" + `===============`)))
                         .then(() => userInput())
                 })
@@ -216,13 +211,11 @@ updateEmployeeRole = () => {
                         message: "Which role do you want to update?",
                         choices: roleChoices
                     },
-                ]).then((answer) => {
-                    console.log("answer" + answer[0]);
-                    console.log("roleId" + answer.roleId);
-                    console.log("employeeId" + answer.employeeId);
-                    const params = (answer.roleId, answer.employeeId);
+                ]).then(answer => {
+                    const params = (answer.roleId, answer.employeeId)
                     db.setRole(params)
-                        .then(() => console.log(chalk.greenBright.bold(`===============` + "Employee's Role has been updated!" + `===============`)))
+                     .then(() => 
+                     console.log(chalk.greenBright.bold(`=============` + "Employee's Role has been updated!" + `==============`)))
                         .then(() => userInput())
                 })
         })
