@@ -100,21 +100,17 @@ viewAllDepartments = () => {
 addDepartment = () => {
     inquirer.prompt([
         {
-            name: 'newDepartment',
+            name: 'department',
             type: 'input',
             message: "What's the name of new Department?"
         }
-    ])
-    .then ((answer) => {
-        const sql = `INSERT INTO departments (name) VALUES (?)`;
-        const params = answer.newDepartment;
-        connection.query(sql, params, (error, response) => {
-            if (error) throw error;
-            console.log(chalk.greenBright.bold(`========================================================================================`));
-            console.log(chalk.blueBright(params + `Department created!`));
-            console.log(chalk.greenBright.bold(`========================================================================================`));
-            viewAllDepartments();
-        })
+    ]).then((answer) => {
+        const params = answer.department
+        db.newDept(params)
+            .then(() =>
+                console.log(chalk.greenBright.bold(`===============` + "New Department has been added!" + `===============`)))
+            .then(() => userInput())
+
     })
 };
 
@@ -122,36 +118,116 @@ addDepartment = () => {
 const addRole = () => {
     //find department
     db.findAllDepartments().then(([departments]) => {
-        const deptChoices = departments.map(({id, name}) =>
-         ({ value:id, name: name}))
+        const deptChoices = departments.map(({ id, name }) =>
+            ({ value: id, name: name }))
 
-    inquirer.prompt ([
-        {
-            name: "title",
-            type: "input",
-            message: " What's the title of your role?"
-        },
-        {
-            name: "salary",
-            type: "input",
-            message: " What salary for new role?"
-        },
-        {
-            name: "department_id",
-            type: "list",
-            message: " What department your new role in?",
-            choices: deptChoices
-        }
-    ]).then(role => {
-        db.newRole(role)
-        .then(() => console.log("role added"))
-        .then(() => userInput())
+        inquirer.prompt([
+            {
+                name: "title",
+                type: "input",
+                message: " What's the title of your role?"
+            },
+            {
+                name: "salary",
+                type: "input",
+                message: " What salary for new role?"
+            },
+            {
+                name: "department_id",
+                type: "list",
+                message: " What department your new role in?",
+                choices: deptChoices
+            }
+        ]).then(role => {
+            db.newRole(role)
+                .then(() => console.log(chalk.greenBright.bold(`===============` + "New Role has been added!" + `===============`)))
+                .then(() => userInput())
+        })
     })
-})
-   
+
 };
 addEmployee = () => {
-    
+
+    // find role
+    db.findAllRoles().then(([roles]) => {
+        const roleChoices = roles.map(({ id, title }) =>
+            ({ value: id, name: title }))
+        // find managers( having problems with placing right variables for ? )
+        // db.findAllManagers().then(([ ? ]))
+        // const managerChoices = ?.map(({ id, first_name, last_name }) => ({ value: id, name: first_name + " " + last_name }))
+
+        // find employees (lists all employees, but doesn't add manager to new employee, shows null)
+        db.findAllEmployees().then(([employees]) => {
+            const managerChoices = employees.map(({ id, first_name, last_name }) => ({ value: id, name: first_name + " " + last_name }))
+
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'first_name',
+                    message: "What is the employee's first name?"
+                },
+                {
+                    type: 'input',
+                    name: 'last_name',
+                    message: "What is the employee's last name?"
+                },
+                {
+                    name: 'role_id',
+                    type: 'list',
+                    message: "What is the employee's role?",
+                    choices: roleChoices
+                },
+                {
+                    type: 'list',
+                    name: 'manager_id',
+                    message: "Who is the employee's manager?",
+                    choices: managerChoices
+                }
+            ])
+                .then(employee => {
+
+                    db.newEmployee(employee)
+                        .then(() => console.log(chalk.greenBright.bold(`===============` + "New Employee has been added!" + `===============`)))
+                        .then(() => userInput())
+                })
+        })
+    })
+
 }
+updateEmployeeRole = () => {
+
+    db.findAllEmployees().then(([employees]) => {
+        const employeeChoices = employees.map(({ id, first_name, last_name}) => ({ value: id, name: first_name + " " + last_name}))
+
+        db.findAllRoles().then(([roles]) => {
+            const roleChoices = roles.map(({ id, title }) =>
+                ({ value: id, name: title }))
+            inquirer
+                .prompt([
+                    {
+                        type: "list",
+                        name: "employeeId",
+                        message: "Which employee's role do you want to update?",
+                        choices: employeeChoices
+                    },
+                    {
+                        type: "list",
+                        name: "roleId",
+                        message: "Which role do you want to update?",
+                        choices: roleChoices
+                    },
+                ]).then((answer) => {
+                    console.log("answer" + answer[0]);
+                    console.log("roleId" + answer.roleId);
+                    console.log("employeeId" + answer.employeeId);
+                    const params = (answer.roleId, answer.employeeId);
+                    db.setRole(params)
+                        .then(() => console.log(chalk.greenBright.bold(`===============` + "Employee's Role has been updated!" + `===============`)))
+                        .then(() => userInput())
+                })
+        })
+    })
+}
+
 
 

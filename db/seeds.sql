@@ -15,7 +15,7 @@ VALUES
 ("Accountant", 125000, 3), 
 ("Lawyer", 190000, 4),
 ("Legal Team Lead", 250000, 4),
-("Marketing Analyst", 60000, 5),
+("Marketing Analyst" , 60000, 5),
 ("Marketing lead", 95000, 5);
 
 INSERT INTO employees(first_name, last_name, role_id, manager_id)

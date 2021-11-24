@@ -24,20 +24,25 @@ class DB {
         `SELECT roles.id, roles.title , roles.salary , departments.name AS 'department' FROM roles INNER JOIN departments ON departments.id = roles.department_id;`
       );
   }
+  newDept(params) {
+    return this.connection
+    .promise()
+    .query(`INSERT INTO departments (name) VALUES (?)`,params);
+  }
   newRole(params) {
      return this. connection.promise().query(`INSERT INTO roles SET ?`, params);
      
   }
-  newMng() {
-      return this.connection.promise().query(`SELECT CONCAT(first_name, ' ' ,last_name) AS Manager FROM employees WHERE manager_id IS NULL`)
-  }
+ 
   newEmployee(params) {
-      return this.connection.promise().query(`INSERT INTO employees 
-      set ?`, params);
-  }
-
-  
+      return this.connection.promise().query(`INSERT INTO employees SET ?`, params);
  
 }
-
+ findAllManagers() {
+  return this.connection.promise().query(`SELECT CONCAT(first_name, ' ' , last_name) AS 'manager' FROM employees WHERE manager_id IS NULL`)
+ }
+ setRole(params){
+  return this.connection.promise().query(`UPDATE employees SET role_id = ? WHERE employees.id = ? VALUES (?, ?)`, params)
+ }
+}
 module.exports = new DB(connection);
