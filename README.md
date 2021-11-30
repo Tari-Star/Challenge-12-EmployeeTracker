@@ -70,11 +70,17 @@
 
 * Create a .env file in the root directory of your project. Add environment-specific variables on new lines in the form of NAME=VALUE.
 
-**5. [Console.table]():**
+**5. [Console.table](https://www.npmjs.com/package/console.table):**
 
-**6. [Figlet]():**
+* The console. table() method displays tabular data as a table.
 
-**7. [Chalk]():**
+**6. [Figlet](https://www.npmjs.com/package/figlet):**
+
+* FIGlet is a computer program that generates text banners, in a variety of typefaces, composed of letters made up of conglomerations of smaller ASCII characters (see ASCII art).
+
+**7. [Chalk](https://www.npmjs.com/package/console.table):**
+
+* Chalk module in Node. js is the third-party module that is used for styling the format of text and allows us to create our own themes in the node.
 
 ## Usage:
 
